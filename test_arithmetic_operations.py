@@ -273,3 +273,88 @@ def test_multiply_extreme_values():
     assert multiply(float('-inf'), float('inf')) == float('-inf')
     assert multiply(float('inf'), float('inf')) == float('inf')
     assert multiply(float('-inf'), float('-inf')) == float('inf')
+
+# ====== test divide ======
+
+def test_divide_integers():
+    assert divide(6, 3) == 2
+    assert divide(-6, 3) == -2
+    assert divide(0, 3) == 0
+
+def test_divide_floats():
+    assert divide(7.5, 2.5) == pytest.approx(3.0, rel=1e-9)
+    assert divide(-7.5, 2.5) == pytest.approx(-3.0, rel=1e-9)
+
+def test_divide_mixed_types():
+    assert divide(7, 2.5) == pytest.approx(2.8, rel=1e-9)
+    assert divide(-7, 2.5) == pytest.approx(-2.8, rel=1e-9)
+
+def test_divide_zero():
+    assert divide(0, 5) == 0
+
+def test_divide_negative_and_positive():
+    assert divide(6, -3) == -2
+    assert divide(-6, -3) == 2
+
+def test_divide_by_zero():
+    with pytest.raises(ZeroDivisionError):
+        divide(5, 0)
+    with pytest.raises(ZeroDivisionError):
+        divide(0, 0)
+
+def test_divide_large_numbers():
+    large_number = 1e308
+    assert divide(large_number, 2) == pytest.approx(5e307, rel=1e-9)
+    assert divide(-large_number, 2) == pytest.approx(-5e307, rel=1e-9)
+
+def test_divide_small_numbers():
+    small_number = 1e-154
+    assert divide(small_number, 2) == pytest.approx(5e-155, rel=1e-9)
+    assert divide(-small_number, 2) == pytest.approx(-5e-155, rel=1e-9)
+
+def test_divide_strings():
+    with pytest.raises(TypeError):
+        divide("hello", "world")
+
+def test_divide_lists():
+    with pytest.raises(TypeError):
+        divide([1, 2], [3, 4])
+
+def test_divide_tuples():
+    with pytest.raises(TypeError):
+        divide((1, 2), (3, 4))
+
+def test_divide_none():
+    with pytest.raises(TypeError):
+        divide(None, 5)
+
+def test_divide_nan():
+    result = divide(float('nan'), 1)
+    assert isnan(result)
+    result = divide(float('nan'), float('nan'))
+    assert isnan(result)
+
+def test_divide_infinity():
+    assert divide(float('inf'), 1) == float('inf')
+    assert divide(float('-inf'), 1) == float('-inf')
+    assert divide(float('inf'), -1) == float('-inf')
+    assert divide(float('-inf'), -1) == float('inf')
+    assert divide(1, float('inf')) == pytest.approx(0.0, rel=1e-9)
+    assert divide(1, float('-inf')) == pytest.approx(0.0, rel=1e-9)
+    with pytest.raises(ZeroDivisionError):
+        divide(float('inf'), 0)
+
+def test_divide_min_max_float():
+    min_float = -1.7e308
+    max_float = 1.7e308
+    assert divide(min_float, 1) == min_float
+    assert divide(max_float, 1) == max_float
+    assert divide(max_float, 2) == pytest.approx(8.5e307, rel=1e-9)
+    assert divide(min_float, 2) == pytest.approx(-8.5e307, rel=1e-9)
+
+def test_divide_extreme_values():
+    assert isnan(divide(float('inf'), float('inf')))
+    assert isnan(divide(float('-inf'), float('inf')))
+    assert isnan(divide(float('inf'), float('-inf')))
+    assert isnan(divide(float('nan'), float('inf')))
+    assert isnan(divide(float('nan'), float('-inf')))
