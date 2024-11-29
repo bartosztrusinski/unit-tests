@@ -173,4 +173,103 @@ def test_subtract_large_inputs():
     assert subtract(max_number, -max_number) == float('inf')
     assert subtract(-max_number, max_number) == float('-inf')
     assert subtract(max_number, max_number) == 0
-    
+
+
+# ====== test multiply ======
+
+def test_multiply_integers():
+    assert multiply(2, 3) == 6
+    assert multiply(-2, 3) == -6
+    assert multiply(2, -3) == -6
+    assert multiply(-2, -3) == 6
+    assert multiply(0, 3) == 0
+    assert multiply(3, 0) == 0
+
+def test_multiply_floats():
+    assert multiply(1.5, 2.5) == pytest.approx(3.75, rel=1e-9)
+    assert multiply(-1.5, 2.5) == pytest.approx(-3.75, rel=1e-9)
+    assert multiply(1.5, -2.5) == pytest.approx(-3.75, rel=1e-9)
+    assert multiply(-1.5, -2.5) == pytest.approx(3.75, rel=1e-9)
+
+def test_multiply_mixed_types():
+    assert multiply(2, 2.5) == pytest.approx(5.0, rel=1e-9)
+    assert multiply(-2, 2.5) == pytest.approx(-5.0, rel=1e-9)
+    assert multiply(2.5, -2) == pytest.approx(-5.0, rel=1e-9)
+    assert multiply(-2.5, -2) == pytest.approx(5.0, rel=1e-9)
+
+def test_multiply_zero():
+    assert multiply(0, 0) == 0
+    assert multiply(0, 5) == 0
+    assert multiply(5, 0) == 0
+
+def test_multiply_negative_and_positive():
+    assert multiply(2, -3) == -6
+    assert multiply(-3, 2) == -6
+    assert multiply(-2, -3) == 6
+
+def test_multiply_large_numbers():
+    large_number = 1e308
+    assert multiply(large_number, large_number) == float('inf')
+    assert multiply(large_number, 0.5) == pytest.approx(0.5e308)
+    assert multiply(-large_number, large_number) == float('-inf')
+    assert multiply(large_number, -large_number) == float('-inf')
+
+
+def test_multiply_small_numbers():
+    small_number = 1e-154
+    assert multiply(small_number, small_number) == pytest.approx(1e-308, rel=1e-9)
+    assert multiply(-small_number, small_number) == pytest.approx(-1e-308, rel=1e-9)
+
+def test_multiply_strings():
+    with pytest.raises(TypeError):
+        multiply("hello", "world")
+
+def test_multiply_lists():
+    with pytest.raises(TypeError):
+        multiply([1, 2], [3, 4])
+
+def test_multiply_tuples():
+    with pytest.raises(TypeError):
+        multiply((1, 2), (3, 4))
+
+def test_multiply_none():
+    with pytest.raises(TypeError):
+        multiply(None, 5)
+
+def test_multiply_nan():
+    result = multiply(float('nan'), 1)
+    assert isnan(result)
+    result = multiply(float('nan'), float('nan'))
+    assert isnan(result)
+
+def test_multiply_infinity():
+    assert multiply(float('inf'), 1) == float('inf')
+    assert multiply(float('inf'), -1) == float('-inf')
+    assert multiply(float('-inf'), 1) == float('-inf')
+    assert multiply(float('-inf'), -1) == float('inf')
+    assert isnan(multiply(float('inf'), 0))
+    assert isnan(multiply(float('-inf'), 0))
+
+def test_multiply_min_max_float():
+    min_float = -1.7e308
+    max_float = 1.7e308
+    assert multiply(min_float, 0) == 0
+    assert multiply(max_float, 0) == 0
+    assert multiply(max_float, 1) == max_float
+    assert multiply(min_float, 1) == min_float
+
+    pos_overflow = multiply(max_float, 2)
+    assert isinf(pos_overflow) and pos_overflow > 0
+
+    neg_overflow = multiply(min_float, 2)
+    assert isinf(neg_overflow) and neg_overflow < 0
+
+def test_multiply_opposites():
+    assert multiply(1, -1) == -1
+    assert multiply(1e10, -1e10) == -1e20
+
+def test_multiply_extreme_values():
+    assert multiply(float('inf'), float('-inf')) == float('-inf')
+    assert multiply(float('-inf'), float('inf')) == float('-inf')
+    assert multiply(float('inf'), float('inf')) == float('inf')
+    assert multiply(float('-inf'), float('-inf')) == float('inf')
