@@ -1,10 +1,16 @@
 from collections import defaultdict
 
 def parse_string(files_string):
+    if not isinstance(files_string, str):
+        raise TypeError("Input must be a string")
+    
     files = files_string.split(", ")
     files_grouped_by_extension = defaultdict(list)
 
     for file in files:
+        if "." not in file:
+            raise ValueError(f"Invalid file format: {file}")
+        
         _, extension = file.rsplit(".", 1)
         files_grouped_by_extension[extension].append(file)
 
@@ -15,5 +21,5 @@ def parse_string(files_string):
 
     return "\n".join(grouped_files_string)
 
-files_string = "plik1.jpg, plik2.gif, plik3.mid, plik4.jpg"
-print(parse_string(files_string))
+# files_string = "plik1.jpg, plik2.gif, plik3.mid, plik4.jpg"
+# print(parse_string(files_string))
