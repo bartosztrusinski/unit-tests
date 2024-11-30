@@ -6,15 +6,15 @@ def parse_string(files_string):
     if not files_string.strip():
         raise ValueError("Input string cannot be empty or whitespace only")
     
-    files = files_string.split(", ")
+    files = files_string.split(",")
     files_grouped_by_extension = defaultdict(list)
 
     for file in files:
-        if "." not in file:
+        if "." not in file or file.startswith(".") or file.endswith("."):
             raise ValueError(f"Invalid file format: {file}")
         
         _, extension = file.rsplit(".", 1)
-        files_grouped_by_extension[extension.strip()].append(file.strip())
+        files_grouped_by_extension[extension.strip().lower()].append(file.strip())
 
     grouped_files_string = []
 
