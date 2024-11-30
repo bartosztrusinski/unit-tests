@@ -3,6 +3,8 @@ from collections import defaultdict
 def parse_string(files_string):
     if not isinstance(files_string, str):
         raise TypeError("Input must be a string")
+    if not files_string.strip():
+        raise ValueError("Input string cannot be empty or whitespace only")
     
     files = files_string.split(", ")
     files_grouped_by_extension = defaultdict(list)
@@ -12,7 +14,7 @@ def parse_string(files_string):
             raise ValueError(f"Invalid file format: {file}")
         
         _, extension = file.rsplit(".", 1)
-        files_grouped_by_extension[extension].append(file)
+        files_grouped_by_extension[extension.strip()].append(file.strip())
 
     grouped_files_string = []
 
